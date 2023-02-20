@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+body{
+    background-color: #0d1117;
+    font-family: monospace;
+
+}
+
+.logo_font{
+    font-family: 'Source Code Pro', monospace;
+}
+.font_poppins{
+    font-family: 'Poppins', sans-serif;
+}
