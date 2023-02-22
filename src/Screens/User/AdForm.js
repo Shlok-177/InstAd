@@ -1,9 +1,11 @@
 import { Alert, Snackbar } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import ConnectMetamaskButton from '../../Components/ConnectMetamaskButton';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import ScrollToTop from '../../Components/ScrollToTop';
 import ABI from '../../ABI.json';
-import { ethers, Log } from 'ethers';
+import { ethers } from 'ethers';
+import { useCreateAsset } from '@livepeer/react';
+import { useDropzone } from 'react-dropzone';
+
 
 const AdForm = ({ categories, websites, onSelectedWebsites }) => {
     const [username, setUsername] = useState('');
@@ -15,25 +17,61 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
     const [selectedCard, setSelectedCard] = useState(null);
     const [receiverAddress, setReceiverAddress] = useState();
     const [receiverDate, setReceiverDate] = useState();
+    const [video, setVideo] = useState();
+
+
+    const {
+        mutate: createAsset,
+        data: asset,
+        status,
+        progress,
+        error,
+    } = useCreateAsset(
+        video
+            ? {
+                sources: [{ name: video.name, file: video }]
+            }
+            : null,
+    );
+
+    const onDrop = useCallback(async (acceptedFiles) => {
+        if (acceptedFiles && acceptedFiles.length > 0 && acceptedFiles?.[0]) {
+            setVideo(acceptedFiles[0]);
+        }
+    }, []);
+
+
+    const { getRootProps, getInputProps } = useDropzone({
+        accept: {
+            'video/*': ['*.mp4'],
+        },
+        maxFiles: 1,
+        onDrop,
+    });
+
+    const progressFormatted = useMemo(
+        () =>
+            progress?.[0].phase === 'failed'
+                ? 'Failed to process video.'
+                : progress?.[0].phase === 'waiting'
+                    ? 'Waiting'
+                    : progress?.[0].phase === 'uploading'
+                        ? `Uploading: ${Math.round(progress?.[0]?.progress * 100)}`
+                        : progress?.[0].phase === 'processing'
+                            ? `Processing: ${Math.round(progress?.[0].progress * 100)}`
+                            : null,
+        [progress],
+    );
+
+
+    const contractAddress = '0x7D15df83D0de8e28b62C12B909BeDEeCb120C815';
+
+
 
     const handleCategoryChange = (event) => {
         setCategory(event.target.value);
 
     };
-
-    useEffect(() => {
-        const selectedWebsite = websites.filter((website) =>
-            (website.adType === category && website.occupied === false) ? true : false
-        );
-
-        if (selectedWebsite.length !== 0) {
-            console.log('Selected website:', selectedWebsite);
-            setsidebarsite(selectedWebsite);
-        } else {
-            setsidebarsite(selectedWebsite);
-            setOpen(true);
-        }
-    }, [category, websites]);
 
     const handleFileChange = (event) => {
         setAdFile(event.target.files[0]);
@@ -51,38 +89,68 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
     };
 
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        const data = {
-            _adID: 123,
-            _vid: "123",
-            _title: title,
-            _adtype: category,
-            _shower: receiverAddress,
-            _date: 20
+
+    const mint = async () => {
+        if (asset?.[0]?.playbackId) {
+
+            const provider = new ethers.providers.Web3Provider(window.ethereum)
+            const signer = provider.getSigner()
+            const contractInstance = new ethers.Contract(contractAddress, ABI, signer);
+            console.log("Minting!!");
+
+            try {
+
+                const data = {
+                    _adID: 123,
+                    _vid: asset[0].playbackId,
+                    _title: title,
+                    _adtype: category,
+                    _shower: receiverAddress,
+                    _date: 20
+                }
+                console.log(asset[0].playbackId);
+
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                // const provider = new ethers.providers.Web3Provider(window.ethereum);
+                // const signer = provider.getSigner();
+
+                // Load the contract using the contract address and ABI
+
+                const crypto = new ethers.Contract(contractAddress, ABI, signer);
+
+                // to recevie the data from the BlockChain
+                let allAds = crypto.getAdDetails(data._adID).then((res)=>{
+                    console.log(res)
+                });
+                console.log(allAds);
+
+                // to get the add the data on Contaract
+                // const tx = await crypto.setAdCreator(data._adID, data._vid, data._title, data._adtype, data._shower, data._date);
+                // console.log(`Transaction hash: ${tx.hash}`);
+            }
+            catch (err) {
+                console.log(err);
+            }
         }
+    }
 
-        try {
-            // Connect to the user's Ethereum wallet
-            await window.ethereum.request({ method: 'eth_requestAccounts' });
-            const provider = new ethers.BrowserProvider(window.ethereum);
-            const signer = provider.getSigner();
+    useEffect(() => {
+        mint()
+    })
 
-            // Load the contract using the contract address and ABI
-            const contractAddress = '0x7D15df83D0de8e28b62C12B909BeDEeCb120C815';
-            const contractABI = ABI; // Replace this with the ABI of your ERC20 contract
-            const crypto = new ethers.Contract(contractAddress, contractABI, signer);
+    useEffect(() => {
+        const selectedWebsite = websites.filter((website) =>
+            (website.adType === category && website.occupied === false) ? true : false
+        );
 
-            // Transfer tokens to the receiver address
-            console.log("Hey");
-            const tx = await crypto.setAdCreator(data._adID, data._vid, data._title, data._adtype, data._shower, data._date);
-            console.log(`Transaction hash: ${tx.hash}`);
-          } catch (error) {
-            console.error(error);
-          }
-    };
-
-
+        if (selectedWebsite.length !== 0) {
+            console.log('Selected website:', selectedWebsite);
+            setsidebarsite(selectedWebsite);
+        } else {
+            setsidebarsite(selectedWebsite);
+            setOpen(true);
+        }
+    }, [category, websites]);
 
     return (
         <>
@@ -92,7 +160,7 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
             <div className='flex flex-row '>
                 <div className="form w-[60%]">
                     <div className='m-5 p-5'>
-                        <form onSubmit={handleSubmit}>
+                        <form >
                             <div className="w-full px-3 m-5">
                                 <label className="block uppercase tracking-wide text-white text-xs font-bold mb-2" >
                                     Wallte Address :
@@ -122,23 +190,22 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
                             <div className='w-full px-3 m-5'>
                                 <label className="block text-sm font-medium text-white">Upload Ad:</label>
                                 <div className="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
-                                    <div className="space-y-1 text-center">
-                                        <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                        </svg>
-                                        <div className="flex text-sm text-gray-600 ">
-                                            <label htmlFor="file-upload" className="relative cursor-pointer rounded-md bg-gray-900 font-medium text-[10px] text-white px-3 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500">
-                                                <input name="file-upload" type="file" onChange={handleFileChange} />
-                                            </label>
-                                            <p className="pl-1">or drag and drop</p>
-                                        </div>
-                                        <p className="text-xs text-gray-500">MP4 , JPG, GIF up to 10MB</p>
+                                    <div {...getRootProps()}>
+                                        <input {...getInputProps()} />
+                                        <p className='drag'>{video ? video.name : "Drag and drop or browse files"}
+                                            <br />
+                                            {progressFormatted && progressFormatted}
+                                        </p>
+
                                     </div>
                                 </div>
                             </div>
                             <div className='w-full px-3 m-5'>
 
-                                <button className='text-primary bg-white focus:ring-4 focus:ring-blue-300 font-medium rounded text-sm px-5 py-2.5 mr-2 mb-2  focus:outline-none' type="submit">Submit</button>
+                                <button className='text-primary bg-white focus:ring-4 focus:ring-blue-300 font-medium rounded text-sm px-5 py-2.5 mr-2 mb-2  focus:outline-none' onClick={(e) => {
+                                    e.preventDefault()
+                                    createAsset?.();
+                                }} disabled={!createAsset || status === 'loading'}>Submit</button>
                             </div>
                         </form>
                     </div>
@@ -149,7 +216,7 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
                         {
                             sidebarsite.map((res, index) => {
                                 return (
-                                    <div key={index} className={`py-8 px-4 w-[80%] my-2 bg-gray-900 rounded-3xl hover:cursor-pointer transition-all duration-500 ${selectedCard === index ? 'transform scale-105 bg-black' : ''}`} onClick={() => { setReceiverAddress(res.walletAddress); setReceiverDate(res.time); handleCardClick(index);}} >
+                                    <div key={index} className={`py-8 px-4 w-[80%] my-2 bg-gray-900 rounded-3xl hover:cursor-pointer transition-all duration-500 ${selectedCard === index ? 'transform scale-[1.05] bg-[#000000]' : ''}`} onClick={() => { setReceiverAddress(res.walletAddress); setReceiverDate(res.time); handleCardClick(index); }} >
 
                                         <div className="h-full flex items-start">
                                             <div className="w-12 flex-shrink-0 flex flex-col text-center leading-none">

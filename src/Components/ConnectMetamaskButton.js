@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { ethers } from 'ethers'
+import { ethers  } from 'ethers'
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -47,7 +48,7 @@ const ConnectMetamaskButton = () => {
 
     const getUserBalance = (accountAddress) => {
         window.ethereum.request({ method: 'eth_getBalance', params: [String(accountAddress), "latest"] }).then(balance => {
-            setUserBalance(ethers.formatEther(balance));
+            setUserBalance(ethers.utils.formatEther(balance));
         }).catch(err => console.log("this err accure" + err))
     }
 
