@@ -29,7 +29,7 @@
         time: new Date(),
         occupied: false,
         description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium iste similique, veritatis deserunt ipsam nemo velit accusamus at. Quibusdam non at, accusantium amet expedita eos?',
-        walletAddress : '0xC4416ceF5F2f2793565fDdc5215eE2Bf56bFf9c2'
+        walletAddress : '0x8c78D9d8f5a0738f2364E28A6cE8FE67C8012d97'
     },
     {
         cName: '456',

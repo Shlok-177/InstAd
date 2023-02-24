@@ -14,6 +14,8 @@ export default function CompanyScreen() {
         video.controls = false;
 
     }
+    let id = `34ed8357ka8bucau`;
+    let url = `https://lp-playback.com/hls/${id}/staticlow-bitrate.mp4`
 
 
     return (
@@ -35,14 +37,13 @@ export default function CompanyScreen() {
                     </div>
 
                     <Player
-                        playbackId="4201jtj7pql2mm3u"
+                        playbackId={id}
                         aspectRatio="16to9"
                         objectFit="cover"
                         showLoadingSpinner={true}
                         autoPlay={true}
                         loop={true}
                     />
-
 
 
                 </div>

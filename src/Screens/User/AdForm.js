@@ -1,4 +1,4 @@
-import { Alert, Snackbar } from '@mui/material';
+import { Alert, Box, Snackbar , Modal , Typography, CircularProgress } from '@mui/material';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import ScrollToTop from '../../Components/ScrollToTop';
 import ABI from '../../ABI.json';
@@ -11,14 +11,30 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
     const [username, setUsername] = useState('');
     const [title, setTitle] = useState('');
     const [category, setCategory] = useState('news');
-    const [adFile, setAdFile] = useState(null);
     const [sidebarsite, setsidebarsite] = useState([]);
     const [open, setOpen] = React.useState(false);
     const [selectedCard, setSelectedCard] = useState(null);
     const [receiverAddress, setReceiverAddress] = useState();
     const [receiverDate, setReceiverDate] = useState();
     const [video, setVideo] = useState();
+    /*Modal on submit button*/
+    const [openModal, setOpenModal] = React.useState(false);
+    const handleOpenModal = () => setOpenModal(true);
+    const handleCloseModal = () => setOpenModal(false);
 
+    const style = {
+        backgroundColor: '#0D1117CF',
+        borderRadius: '4px',
+        boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+        backdropFilter: 'blur(1px)',
+        p: 2,
+        maxWidth: '400px',
+        minHeight: '300px',
+        margin: 'auto',
+        mt: '20vh',
+        color: 'white',
+
+      };
 
     const {
         mutate: createAsset,
@@ -37,6 +53,7 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
     const onDrop = useCallback(async (acceptedFiles) => {
         if (acceptedFiles && acceptedFiles.length > 0 && acceptedFiles?.[0]) {
             setVideo(acceptedFiles[0]);
+
         }
     }, []);
 
@@ -64,17 +81,12 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
     );
 
 
+
     const contractAddress = '0x7D15df83D0de8e28b62C12B909BeDEeCb120C815';
-
-
 
     const handleCategoryChange = (event) => {
         setCategory(event.target.value);
 
-    };
-
-    const handleFileChange = (event) => {
-        setAdFile(event.target.files[0]);
     };
 
     const handleClose = (event, reason) => {
@@ -91,15 +103,14 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
 
 
     const mint = async () => {
+
         if (asset?.[0]?.playbackId) {
 
             const provider = new ethers.providers.Web3Provider(window.ethereum)
             const signer = provider.getSigner()
             const contractInstance = new ethers.Contract(contractAddress, ABI, signer);
-            console.log("Minting!!");
-
+           console.log("Minting!!");
             try {
-
                 const data = {
                     _adID: 123,
                     _vid: asset[0].playbackId,
@@ -109,22 +120,23 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
                     _date: 20
                 }
                 console.log(asset[0].playbackId);
+                handleCloseModal();
 
                 await window.ethereum.request({ method: 'eth_requestAccounts' });
                 // const provider = new ethers.providers.Web3Provider(window.ethereum);
                 // const signer = provider.getSigner();
 
-                // Load the contract using the contract address and ABI
+                // ! Load the contract using the contract address and ABI
 
                 const crypto = new ethers.Contract(contractAddress, ABI, signer);
 
-                // to recevie the data from the BlockChain
-                let allAds = crypto.getAdDetails(data._adID).then((res)=>{
+                // ! to recevie the data from the BlockChain
+                   let allAds = crypto.getAdDetails(data._adID).then((res)=>{
                     console.log(res)
                 });
                 console.log(allAds);
 
-                // to get the add the data on Contaract
+                // ! to get the add the data on Contaract
                 // const tx = await crypto.setAdCreator(data._adID, data._vid, data._title, data._adtype, data._shower, data._date);
                 // console.log(`Transaction hash: ${tx.hash}`);
             }
@@ -135,8 +147,9 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
     }
 
     useEffect(() => {
-        mint()
-    })
+        mint();
+    });
+
 
     useEffect(() => {
         const selectedWebsite = websites.filter((website) =>
@@ -204,19 +217,22 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
 
                                 <button className='text-primary bg-white focus:ring-4 focus:ring-blue-300 font-medium rounded text-sm px-5 py-2.5 mr-2 mb-2  focus:outline-none' onClick={(e) => {
                                     e.preventDefault()
+                                    handleOpenModal();
                                     createAsset?.();
+
                                 }} disabled={!createAsset || status === 'loading'}>Submit</button>
                             </div>
                         </form>
                     </div>
                 </div>
 
+
                 <div className='w-[40%]'>
                     <div className='flex flex-col justify-evenly mt-10 p-10'>
                         {
                             sidebarsite.map((res, index) => {
                                 return (
-                                    <div key={index} className={`py-8 px-4 w-[80%] my-2 bg-gray-900 rounded-3xl hover:cursor-pointer transition-all duration-500 ${selectedCard === index ? 'transform scale-[1.05] bg-[#000000]' : ''}`} onClick={() => { setReceiverAddress(res.walletAddress); setReceiverDate(res.time); handleCardClick(index); }} >
+                                    <div key={index} className={`py-8 px-4 w-[80%] my-2 bg-gray-900 rounded-3xl hover:cursor-pointer transition-all duration-500 ${selectedCard === index ? 'transform scale-[1.05] bg-black' : ''}`} onClick={() => { setReceiverAddress(res.walletAddress); setReceiverDate(res.time); handleCardClick(index); }} >
 
                                         <div className="h-full flex items-start">
                                             <div className="w-12 flex-shrink-0 flex flex-col text-center leading-none">
@@ -243,6 +259,26 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
                     No available websites match the <b className='text-base'>{category}</b>  category
                 </Alert>
             </Snackbar>
+
+
+            <Modal
+                open={openModal}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                    <Typography id="modal-modal-title" variant="h6" component="h1" sx={{fontFamily: 'monospace' , textAlign: 'center' , marginY: '10px'}} >
+                   Progress:-
+
+                    </Typography>
+                    <Typography id="modal-modal-title" variant="h6" component="h2"  sx={{fontFamily: 'monospace' , textAlign: 'center' , marginY: '20px'}}>
+                    <CircularProgress color='inherit' />
+                    </Typography>
+                    <Typography id="modal-modal-title" variant="h6" component="h2"  sx={{fontFamily: 'monospace' , textAlign: 'center' , marginY: '20px'}}>
+                    {progressFormatted && progressFormatted}
+                    </Typography>
+                </Box>
+            </Modal>
         </>
     );
 };

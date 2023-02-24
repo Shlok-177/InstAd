@@ -27,13 +27,13 @@ export default function UserScreen() {
             <section class="text-gray-600 body-font mx-10 p-5">
   <div class="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center">
     <div class="lg:max-w-lg lg:w-full md:w-1/2 w-5/6 mb-10 md:mb-0">
-      <img class="object-cover object-center rounded" alt="hero" src="https://dummyimage.com/720x600" />
+      <img class="object-cover object-center rounded" alt="hero" src="https://images.unsplash.com/photo-1645731504636-72725e46b26b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80" />
     </div>
     <div class="lg:flex-grow md:w-1/2 lg:pl-24 md:pl-16 flex flex-col md:items-start md:text-left items-center text-center">
-      <h1 class="title-font sm:text-4xl text-3xl mb-4 font-medium text-white">Lorem ipsum dolor sit amet.
-        <br class="hidden lg:inline-block" />readymade gluten
+      <h1 class="title-font sm:text-3xl text-2xl mb-4 font-medium text-white">Experience Trust and Transparency in Advertising with
+        <br class="hidden lg:inline-block" />Shardeum's Blockchain Technology
       </h1>
-      <p class="mb-8 leading-relaxed">Copper mug try-hard pitchfork pour-over freegan heirloom neutra air plant cold-pressed tacos poke beard tote bag. Heirloom echo park mlkshk tote bag selvage hot chicken authentic tumeric truffaut hexagon try-hard chambray. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor sint perspiciatis obcaecati officiis, assumenda ipsam harum et asperiores corrupti illo excepturi repellat molestiae? Assumenda fugiat voluptatibus molestiae, unde tempora perferendis repellat excepturi consectetur, nisi necessitatibus enim distinctio ducimus veniam laudantium modi ipsum repellendus eius! Placeat, odit. Reiciendis, officiis corrupti? Hic, deleniti ut?</p>
+      <p class="mb-8 mt-5 text-justify leading-relaxed">Are you tired of the opaque and often fraudulent world of digital advertising? Shardeum's blockchain technology brings transparency and trust to the industry. Our smart contract payment system ensures that advertisers pay website owners fairly and on time, while our analytics provide transparent data on ad performance. Join our platform today and experience a new level of trust in digital advertising.</p>
     </div>
   </div>
 </section>
