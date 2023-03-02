@@ -12,7 +12,7 @@ export default function FormFeild() {
 
     const [AdData, setAdData] = useState({
         siteName: '',
-        approxVisitors: 0,
+        approxVisitors: '',
         chargesPerDay: 0,
         startingDate: new Date().toISOString().substring(0, 10),
         totalDays: 5,
@@ -51,14 +51,16 @@ export default function FormFeild() {
 
     const saveData = async (e) => {
         e.preventDefault();
+        console.log(AdData);
 
         const PostData = {
-            companyWalletAddress : WalletData,
+            companyWalletAddress: WalletData[0],
             category: category,
-            siteLink : AdData.siteName,
-            visitors : `${AdData.visitors}`,
-            desc : AdData.desc
+            siteLink: AdData.siteName,
+            visitors: AdData.approxVisitors,
+            desc: AdData.descOfsite,
         }
+        console.log(PostData);
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -70,7 +72,6 @@ export default function FormFeild() {
         let xyz = await res.json();
         console.log(xyz);
 
-        console.log(AdData);
         setOpen(true);
         setAdData({
             siteName: '',
