@@ -9,7 +9,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 
-const ConnectMetamaskButton = () => {
+const ConnectMetamaskButton = (props) => {
 
     const [errorMessage, setErrorMessage] = useState(null);
     const [defaultAccount, setDefaultAccount] = useState("Not Connected");
@@ -44,6 +44,8 @@ const ConnectMetamaskButton = () => {
         getUserBalance(accountName);
         console.log(defaultAccount);
         console.log(userBalance);
+        props.onData(defaultAccount);
+
     }
 
     const getUserBalance = (accountAddress) => {

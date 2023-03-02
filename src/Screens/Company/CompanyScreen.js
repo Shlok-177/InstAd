@@ -14,7 +14,7 @@ export default function CompanyScreen() {
         video.controls = false;
 
     }
-    let id = `34ed8357ka8bucau`;
+    let id = `2e15k9qsxfuypqeu`;
     let url = `https://lp-playback.com/hls/${id}/staticlow-bitrate.mp4`
 
 
@@ -36,15 +36,19 @@ export default function CompanyScreen() {
                         <a href='https://shlok-jadeja.gitbook.io/documentation-of-instad/' className="ml-4 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 bg-transparent transition duration-150 ease-in-out hover:border-indigo-600 lg:text-xl lg:font-bold  hover:text-indigo-600 rounded border border-indigo-700 text-indigo-700 px-4 sm:px-10 py-2 sm:py-4 text-sm">Show Documantation</a>
                     </div>
 
-                    <Player
+                    {/* <Player
                         playbackId={id}
                         aspectRatio="16to9"
                         objectFit="cover"
                         showLoadingSpinner={true}
                         autoPlay={true}
                         loop={true}
-                    />
+                    /> */}
 
+                    <video  controls = {false} autoPlay = {true} loop = {true} muted width="10%">
+                        <source src={url} type="video/mp4"
+                        />.
+                    </video>
 
                 </div>
 

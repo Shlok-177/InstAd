@@ -1,8 +1,8 @@
-import { Alert, Box, Snackbar , Modal , Typography, CircularProgress } from '@mui/material';
+import { Alert, Box, Snackbar, Modal, Typography, CircularProgress } from '@mui/material';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import ScrollToTop from '../../Components/ScrollToTop';
 import ABI from '../../ABI.json';
-import { ethers } from 'ethers';
+import { ethers, logger } from 'ethers';
 import { useCreateAsset } from '@livepeer/react';
 import { useDropzone } from 'react-dropzone';
 
@@ -34,7 +34,7 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
         mt: '20vh',
         color: 'white',
 
-      };
+    };
 
     const {
         mutate: createAsset,
@@ -82,11 +82,10 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
 
 
 
-    const contractAddress = '0x7D15df83D0de8e28b62C12B909BeDEeCb120C815';
+    const contractAddress = '0xD60244ABD90e5FFf345c96ffCfB28181C286B3Bf';
 
     const handleCategoryChange = (event) => {
         setCategory(event.target.value);
-
     };
 
     const handleClose = (event, reason) => {
@@ -109,7 +108,7 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
             const provider = new ethers.providers.Web3Provider(window.ethereum)
             const signer = provider.getSigner()
             const contractInstance = new ethers.Contract(contractAddress, ABI, signer);
-           console.log("Minting!!");
+            console.log("Minting!!");
             try {
                 const data = {
                     _adID: 123,
@@ -130,15 +129,45 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
 
                 const crypto = new ethers.Contract(contractAddress, ABI, signer);
 
-                // ! to recevie the data from the BlockChain
-                   let allAds = crypto.getAdDetails(data._adID).then((res)=>{
-                    console.log(res)
-                });
-                console.log(allAds);
+                // // ! to recevie the data from the BlockChain
+                //    let allAds = crypto.getAdDetails(data._adID).then((res)=>{
+                //     console.log(res)
+                // });
+                // console.log(allAds);
+
+                const PostData = {
+                    shardeumToken : 0.001,
+                    data: new Date(),
+                    playbackID : asset[0].playbackId,
+                    companyWalletAddress: receiverAddress,
+                    adOwnerWalletAddress : '0xdfsgsdsdgsdg'
+                }
+
+                const requestOptions = {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(PostData)
+                };
+
+                let res = await fetch('https://instad-backend-production.up.railway.app/api/company/addAd', requestOptions)
+                let xyz = await res.json();
+
+                console.log(xyz);
+
 
                 // ! to get the add the data on Contaract
-                // const tx = await crypto.setAdCreator(data._adID, data._vid, data._title, data._adtype, data._shower, data._date);
-                // console.log(`Transaction hash: ${tx.hash}`);
+                const tx = await crypto.setAdCreator(data._adID, data._vid, data._title, data._adtype, data._shower, data._date);
+
+
+                const { ethereum } = window;
+                if (ethereum) {
+                    const provider = new ethers.providers.Web3Provider(ethereum);
+                    const signer = provider.getSigner();
+                    const contractInstance = new ethers.Contract(contractAddress, ABI, signer);
+
+                    await contractInstance.sendShardeum(receiverAddress, { value: 1000000000000000 }).then(res => console.log(res))
+                }
+                console.log(`Transaction hash: ${tx.hash}`);
             }
             catch (err) {
                 console.log(err);
@@ -267,15 +296,15 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h1" sx={{fontFamily: 'monospace' , textAlign: 'center' , marginY: '10px'}} >
-                   Progress:-
+                    <Typography id="modal-modal-title" variant="h6" component="h1" sx={{ fontFamily: 'monospace', textAlign: 'center', marginY: '10px' }} >
+                        Progress:-
 
                     </Typography>
-                    <Typography id="modal-modal-title" variant="h6" component="h2"  sx={{fontFamily: 'monospace' , textAlign: 'center' , marginY: '20px'}}>
-                    <CircularProgress color='inherit' />
+                    <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ fontFamily: 'monospace', textAlign: 'center', marginY: '20px' }}>
+                        <CircularProgress color='inherit' />
                     </Typography>
-                    <Typography id="modal-modal-title" variant="h6" component="h2"  sx={{fontFamily: 'monospace' , textAlign: 'center' , marginY: '20px'}}>
-                    {progressFormatted && progressFormatted}
+                    <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ fontFamily: 'monospace', textAlign: 'center', marginY: '20px' }}>
+                        {progressFormatted && progressFormatted}
                     </Typography>
                 </Box>
             </Modal>
