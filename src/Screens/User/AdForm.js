@@ -35,7 +35,7 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
         color: 'white',
 
     };
-    console.log(websites);
+    // console.log(websites);
     const {
         mutate: createAsset,
         data: asset,
@@ -103,7 +103,14 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
     const mint = async () => {
 
         if (asset?.[0]?.playbackId) {
+            handleCloseModal();
 
+
+        }
+    }
+
+    const submit = async (e) => {
+        e.preventDefault();
             const provider = new ethers.providers.Web3Provider(window.ethereum)
             const signer = provider.getSigner()
             const contractInstance = new ethers.Contract(contractAddress, ABI, signer);
@@ -118,7 +125,6 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
                     _date: 20
                 }
                 console.log(asset[0].playbackId);
-                handleCloseModal();
 
                 await window.ethereum.request({ method: 'eth_requestAccounts' });
                 // const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -127,6 +133,7 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
                 // ! Load the contract using the contract address and ABI
 
                 const crypto = new ethers.Contract(contractAddress, ABI, signer);
+                const tx = await crypto.setAdCreator(data._adID, data._vid, data._title, data._adtype, data._shower, data._date);
 
                 // // ! to recevie the data from the BlockChain
                 //    let allAds = crypto.getAdDetails(data._adID).then((res)=>{
@@ -134,43 +141,39 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
                 // });
                 // console.log(allAds);
 
-                const PostData = {
-                    shardeumToken : 0.001,
-                    data: new Date(),
-                    playbackID : asset[0].playbackId,
-                    companyWalletAddress: receiverAddress,
-                    adOwnerWalletAddress : '0xdfsgsdsdgsdg'
-                }
 
-                const requestOptions = {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(PostData)
-                };
-
-                let res = await fetch('http://localhost:4000/api/company/addAd', requestOptions)
-                let xyz = await res.json();
-
-                console.log(xyz);
-
-
-                // ! to get the add the data on Contaract
-                const tx = await crypto.setAdCreator(data._adID, data._vid, data._title, data._adtype, data._shower, data._date);
-
-
-                const { ethereum } = window;
-                if (ethereum) {
-                    const provider = new ethers.providers.Web3Provider(ethereum);
-                    const signer = provider.getSigner();
-                    const contractInstance = new ethers.Contract(contractAddress, ABI, signer);
-
-                    await contractInstance.sendShardeum(receiverAddress, { value: 1000000000000000 }).then(res => console.log(res))
-                }
                 console.log(`Transaction hash: ${tx.hash}`);
             }
             catch (err) {
                 console.log(err);
             }
+        const PostData = {
+            shardeumToken : 0.001,
+            data: new Date(),
+            playbackId : asset[0].playbackId,
+            companyWalletAddress: receiverAddress,
+            adOwnerWalletAddress : '0xdfsgsdsdgsdg'
+        }
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(PostData)
+        };
+
+        let res = await fetch('http://localhost:4000/api/company/addAd', requestOptions)
+        let xyz = await res.json();
+
+        console.log(xyz);
+
+
+        const { ethereum } = window;
+        if (ethereum) {
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const signer = provider.getSigner();
+            const contractInstance = new ethers.Contract(contractAddress, ABI, signer);
+
+            await contractInstance.sendShardeum(receiverAddress, { value: 1000000000000000 }).then(res => console.log(res))
         }
     }
 
@@ -248,7 +251,11 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
                                     handleOpenModal();
                                     createAsset?.();
 
-                                }} disabled={!createAsset || status === 'loading'}>Submit</button>
+
+                                }} disabled={!createAsset || status === 'loading'}>Upload</button>
+                                {
+                                    asset?.[0]?.playbackId ? <button onClick={submit}>submit</button> : <button disabled>Submit</button>
+                                }
                             </div>
                         </form>
                     </div>

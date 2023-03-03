@@ -4,10 +4,14 @@ import createWebsites from './data';
 export default function RegisterCompany() {
     const [websites , setWebsites]  = useState([]);
 
+    useEffect(()=>{
         createWebsites().then(websites => {
             setWebsites(websites);
             console.log(websites);
         });
+    } , [])
+
+
 
 
     return (
