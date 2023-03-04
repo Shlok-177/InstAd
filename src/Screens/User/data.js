@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const getData = async () => {
-    const res = await axios.get('http://localhost:4000/api/company/fetchcompany');
+    const res = await axios.get('https://instad-backend-production.up.railway.app/api/company/fetchcompany');
     console.log(res.data);
     return res.data;
 }

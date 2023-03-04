@@ -161,7 +161,7 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
             body: JSON.stringify(PostData)
         };
 
-        let res = await fetch('http://localhost:4000/api/company/addAd', requestOptions)
+        let res = await fetch('https://instad-backend-production.up.railway.app/api/company/addAd', requestOptions)
         let xyz = await res.json();
 
         console.log(xyz);

@@ -64,8 +64,7 @@ export default function FormFeild() {
             body: JSON.stringify(PostData)
         };
 
-        // let res = await axios.post('http://localhost:4000/api/company/addcompany' , PostData);
-        let res = await fetch('http://localhost:4000/api/company/addcompany', requestOptions)
+        let res = await fetch('https://instad-backend-production.up.railway.app/api/company/addcompany', requestOptions)
         let xyz = await res.json();
         console.log(xyz);
 
