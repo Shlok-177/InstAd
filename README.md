@@ -1,70 +1,76 @@
-# Getting Started with Create React App
+# Welcome to A InstAd
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+InstAd is a decentralized digital advertising platform that utilizes blockchain technology to bring trust, transparency, and fairness to the digital advertising industry. The platform connects advertisers who want to place ads on websites with website owners who are willing to display those ads.
 
-## Available Scripts
+## Feature 
 
-In the project directory, you can run:
+1. Targeted Advertising 
+Allow users to choose specific websites based on their target audience, interests, and demographics. This way, they can ensure that their ad is seen by the right people, increasing the chances of engagement and conversion.
 
-### `npm start`
+2. Smart Contract
+Use smart contracts to automate the payment process and ensure that both parties are satisfied with the transaction. For example, if an advertiser pays for five days of advertising but the website owner does not display the ad, the payment will be automatically refunded to the advertiser.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+3. Crypto Payment
+The Publisher must pay 0.001 SHM in this case for five days before their advertisement appears on the company's website. 
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+# InstAd Integration for React Only For Those who want to show advertisement on their site
 
-### `npm test`
+InstAd is a decentralized digital advertising platform that utilizes blockchain technology to bring trust, transparency, and fairness to the digital advertising industry. This document will guide you on how to integrate InstAd in your React application.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Prerequisites
+1. A valid wallet address to register your company on InstAd.
 
-### `npm run build`
+2. React version 16 or above.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+3. Basic knowledge of React and JavaScript.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Installation
 
-### `npm run eject`
+1. In your React project directory, install the axios package to make HTTP requests to InstAd API:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### `npm install axios`
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+2. Add the following code to the React file where you want to show the InstAd advertisement:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+``` 
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+function InstAd() {
+  const [url, setUrl] = useState('');
 
-## Learn More
+  const fetchAd = async () => {
+    const walletAddress = 'YOUR_WALLET_ADDRESS'; // Replace with your company's wallet address
+    const response = await axios.get(`https://instad-backend-production.up.railway.app/api/company/${walletAddress}`);
+    const adData = response.data[response.data.length - 1];
+    setUrl(`https://lp-playback.com/hls/${adData.playbackId}/static360p0.mp4`);
+  }
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+  useEffect(() => {
+    fetchAd();
+  }, []);
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+  return (
+    <div>
+      {url !== '' ? (
+        <video controls={false} autoPlay={true} loop={true} muted width="100%">
+          <source src={url} type="video/mp4" />
+        </video>
+      ) : (
+        <p>No ads available</p>
+      )}
+    </div>
+  );
+}
 
-### Code Splitting
+export default InstAd;
+```
+ 
+3. Replace YOUR_WALLET_ADDRESS with your company's wallet address. You can find this address after registering your company on InstAd.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+4. Save the file and run your React app. You should now see the InstAd advertisement in the component where you added the code.
 
-### Analyzing the Bundle Size
+# Conclusion
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Congratulations! You have successfully integrated InstAd in your React app. By using InstAd, you can ensure that your digital ads are displayed on websites that match your target audience, while also ensuring that the payment process is automated and transparent. If you have any questions or feedback, please contact InstAd support.
