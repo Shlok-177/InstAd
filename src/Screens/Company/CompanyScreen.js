@@ -45,10 +45,6 @@ export default function CompanyScreen() {
                         loop={true}
                     /> */}
 
-                    <video  controls = {false} autoPlay = {true} loop = {true} muted width="10%">
-                        <source src={url} type="video/mp4"
-                        />.
-                    </video>
 
                 </div>
 

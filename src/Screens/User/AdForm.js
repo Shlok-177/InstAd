@@ -207,12 +207,6 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
                         <form >
                             <div className="w-full px-3 m-5">
                                 <label className="block uppercase tracking-wide text-white text-xs font-bold mb-2" >
-                                    Wallte Address :
-                                </label>
-                                <input className="block w-full px-4 py-2 mt-2 text-white border rounded-md bg-gray-800  border-gray-800 outline-none" id="grid-last-name" type="link" name='linkOfAd' placeholder="" onChange={(e) => setUsername(e.target.value)} value={username} />
-                            </div>
-                            <div className="w-full px-3 m-5">
-                                <label className="block uppercase tracking-wide text-white text-xs font-bold mb-2" >
                                     Advertisement Title :
                                 </label>
                                 <input className="block w-full px-4 py-2 mt-2 text-white border rounded-md bg-gray-800  border-gray-800 outline-none" id="grid-last-name" type="link" name='linkOfAd' placeholder="" onChange={(e) => setTitle(e.target.value)} value={title} />
@@ -254,7 +248,7 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
 
                                 }} disabled={!createAsset || status === 'loading'}>Upload</button>
                                 {
-                                    asset?.[0]?.playbackId ? <button onClick={submit}>submit</button> : <button disabled>Submit</button>
+                                    asset?.[0]?.playbackId ? <button onClick={submit} className= 'text-primary bg-white focus:ring-4 focus:ring-blue-300 font-medium rounded text-sm px-5 py-2.5 mr-2 mb-2  focus:outline-none'>submit</button> : <button disabled className='text-primary bg-white focus:ring-4 focus:ring-blue-300 font-medium rounded text-sm px-5 py-2.5 mr-2 mb-2  focus:outline-none'>Submit</button>
                                 }
                             </div>
                         </form>

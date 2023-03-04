@@ -35,7 +35,6 @@ function App() {
           <Route path = '/company/register' element={<Register />} />
           <Route path = '/user' element={<UserScreen />} />
           <Route path = '/user/register' element={<UserRegister />} />
-
         </Routes>
         <Footer />
       </BrowserRouter>
