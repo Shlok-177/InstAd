@@ -10,14 +10,6 @@ const createWebsites = async () => {
     const newData = await getData();
 
     const websites = [
-        {
-            cName: 'abc',
-            adType: 'sports',
-            time: new Date(),
-            occupied: true,
-            description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium iste similique, veritatis deserunt ipsam nemo velit accusamus at. Quibusdam non at, accusantium amet expedita eos?',
-            walletAddress : 1333454675346989798989
-        },
         ...newData
     ];
 

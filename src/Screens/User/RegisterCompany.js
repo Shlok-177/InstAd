@@ -31,7 +31,7 @@ export default function RegisterCompany() {
                                             <div className="flex-grow pl-6">
                                                 <h2 className="tracking-widest text-xs title-font font-medium text-indigo-500 mb-1">{res.category}</h2>
                                                 <h1 className="title-font text-xl font-medium text-white mb-3">{res.siteLink}</h1>
-                                                {/* <p className="leading-relaxed mb-1">{res.description}</p> */}
+                                                <p className="leading-relaxed mb-1">{res.desc}</p>
                                             </div>
                                         </div>
                                     </div>

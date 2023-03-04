@@ -261,7 +261,7 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
                         {
                             sidebarsite.map((res, index) => {
                                 return (
-                                    <div key={index} className={`py-8 px-4 w-[80%] my-2 bg-gray-900 rounded-3xl hover:cursor-pointer transition-all duration-500 ${selectedCard === index ? 'transform scale-[1.05] bg-black' : ''}`} onClick={() => { setReceiverAddress(res.companyWalletAddress); handleCardClick(index); }} >
+                                    <div key={index} className={`py-8 px-4 w-[80%] my-2 bg-gray-900 rounded-3xl hover:cursor-pointer transition-all duration-500 ${selectedCard === index ? 'transform scale-[1.05] bg-indigo-700' : ''}`} onClick={() => { setReceiverAddress(res.companyWalletAddress); handleCardClick(index); }} >
 
                                         <div className="h-full flex items-start">
                                             <div className="w-12 flex-shrink-0 flex flex-col text-center leading-none">
@@ -269,9 +269,9 @@ const AdForm = ({ categories, websites, onSelectedWebsites }) => {
                                                 <span className="font-medium text-lg text-white title-font leading-none">{res.time.toLocaleDateString().split('/')[1]}</span> */}
                                             </div>
                                             <div className="flex-grow pl-6">
-                                                <h2 className="tracking-widest text-xs title-font font-medium text-indigo-500 mb-1">{res.category}</h2>
+                                                <h2 className="tracking-widest text-xs title-font font-medium text-white mb-1">{res.category}</h2>
                                                 <h1 className="title-font text-xl font-medium text-white mb-3">{res.siteLink}</h1>
-                                                {/* <p className="leading-relaxed mb-1">{res.description}</p> */}
+                                                <p className="leading-relaxed mb-1">{res.des}</p>
                                             </div>
                                         </div>
                                     </div>
