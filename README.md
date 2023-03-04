@@ -27,50 +27,8 @@ InstAd is a decentralized digital advertising platform that utilizes blockchain 
 
 ## Installation
 
-1. In your React project directory, install the axios package to make HTTP requests to InstAd API:
+1. In your React project directory, install the packages and run
 
-### `npm install axios`
-
-2. Add the following code to the React file where you want to show the InstAd advertisement:
-
-``` 
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-
-function InstAd() {
-  const [url, setUrl] = useState('');
-
-  const fetchAd = async () => {
-    const walletAddress = 'YOUR_WALLET_ADDRESS'; // Replace with your company's wallet address
-    const response = await axios.get(`https://instad-backend-production.up.railway.app/api/company/${walletAddress}`);
-    const adData = response.data[response.data.length - 1];
-    setUrl(`https://lp-playback.com/hls/${adData.playbackId}/static360p0.mp4`);
-  }
-
-  useEffect(() => {
-    fetchAd();
-  }, []);
-
-  return (
-    <div>
-      {url !== '' ? (
-        <video controls={false} autoPlay={true} loop={true} muted width="100%">
-          <source src={url} type="video/mp4" />
-        </video>
-      ) : (
-        <p>No ads available</p>
-      )}
-    </div>
-  );
-}
-
-export default InstAd;
-```
- 
-3. Replace YOUR_WALLET_ADDRESS with your company's wallet address. You can find this address after registering your company on InstAd.
-
-4. Save the file and run your React app. You should now see the InstAd advertisement in the component where you added the code.
-
-# Conclusion
+### `npm start`
 
 Congratulations! You have successfully integrated InstAd in your React app. By using InstAd, you can ensure that your digital ads are displayed on websites that match your target audience, while also ensuring that the payment process is automated and transparent. If you have any questions or feedback, please contact InstAd support.
